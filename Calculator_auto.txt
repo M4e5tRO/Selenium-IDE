@@ -1,0 +1,179 @@
+CALCULATOR
+
+-------------
+
+ADDITION
+Command | Target | Value
+
+echo - Prepare variables
+store | 1 | min
+store | 1000 | max
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | a
+echo | A=${a}
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | b
+echo | B=${b}
+execute script | return +${a} + +${b} | c
+echo | Expected=${c}
+
+echo - Main logic
+open | /testlab/calc/
+type | name=a | ${a}
+type | name=b | ${b}
+type | name=f | 10
+click | xpath=//input[@name='op'][@value='+']
+select | name=next | label=Save
+click | css=input[type="submit"]
+verify element present | xpath=//*[contains(text(), '${a} + ${b} = ${c}')]
+
+-------------
+
+DIVISION
+Command | Target | Value
+
+echo - Prepare variables
+store | 1 | min
+store | 1000 | max
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | a
+echo | A=${a}
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | b
+echo | B=${b}
+execute script | return (+${a} / +${b}).toFixed(10) | c
+echo | Expected=${c}
+
+echo - Main logic
+open | /testlab/calc/
+type | name=a | ${a}
+type | name=b | ${b}
+type | name=f | 10
+click | xpath=//input[@name='op'][@value='/']
+select | name=next | label=Save
+click | css=input[type="submit"]
+verify element present | xpath=//*[contains(text(), '${a} / ${b} = ${c}')]
+
+-------------
+
+DIVISION BY ZERO
+Command | Target | Value
+
+echo - Prepare variables
+store | 1 | min
+store | 1000 | max
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | a
+echo | A=${a}
+
+echo - Main logic
+open | /testlab/calc/
+type | name=a | ${a}
+type | name=b | 0
+type | name=f | 10
+click | xpath=//input[@name='op'][@value='/']
+select | name=next | label=Save
+click | css=input[type="submit"]
+verify element present | xpath=//*[contains(text(), 'Division by zero')]
+
+-------------
+
+FRACTION DIGITS
+Command | Target | Value
+
+echo - Prepare variables
+store | 1 | min
+store | 1000 | max
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | a
+echo | A=${a}
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | b
+echo | B=${b}
+execute script | return Math.floor(Math.random()*13) | f
+echo | F=${f}
+execute script | return (+${a} / +${b}).toFixed(f) | c
+echo | Expected=${c}
+
+echo - Main logic
+open | /testlab/calc/
+type | name=a | ${a}
+type | name=b | ${b}
+type | name=f | ${f}
+click | xpath=//input[@name='op'][@value='/']
+select | name=next | label=Save
+click | css=input[type="submit"]
+verify element present | xpath=//*[contains(text(), '${a} / ${b} = ${c}')]
+verify element present | xpath=//*[contains(text(), 'with ${f} fraction digits')]
+
+-------------
+
+MULTIPLICATION
+Command | Target | Value
+
+echo - Prepare variables
+store | 1 | min
+store | 1000 | max
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | a
+echo | A=${a}
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | b
+echo | B=${b}
+execute script | return +${a} * +${b} | c
+echo | Expected=${c}
+
+echo - Main logic
+open | /testlab/calc/
+type | name=a | ${a}
+type | name=b | ${b}
+type | name=f | 10
+click | xpath=//input[@name='op'][@value='*']
+select | name=next | label=Save
+click | css=input[type="submit"]
+xpath=//*[contains(text(), '${a} * ${b} = ${c}')]
+
+-------------
+
+SAVE
+Command | Target | Value
+
+echo - Main logic
+open | /testlab/calc/
+type | name=a | 10
+type | name=b | 17
+type | name=f | 5
+click | xpath=//input[@name='op'][@value='+']
+select | name=next | label=Save
+click | css=input[type="submit"]
+store | false | succes
+while | ${success} == 'false'
+	store value | name=a | old_a
+	store value | name=b | old_b
+	store value | name=f | old_f
+	execute script | operations = document.getElementsByName("op"); old_op = '?'; if (operations[0].checked) {old_op = '+';} if (operations[1].checked) {old_op = '-';} if (operations[2].checked) {old_op = '*';} if (operations[3].checked) {old_op = '/';} return old_op; | old_op
+	click | css=input[type="submit"]
+	store value | name=a | new_a
+	store value | name=b | new_b
+	store value | name=f | new_f
+	execute script | operations = document.getElementsByName("op"); new_op = '?'; if (operations[0].checked) {new_op = '+';} if (operations[1].checked) {new_op = '-';} if (operations[2].checked) {new_op = '*';} if (operations[3].checked) {new_op = '/';} return new_op; | new_op
+	execute script | if ((${old_a} == ${new_a}) && (${old_b} == ${new_b}) && (${old_f} == ${new_f}) && (${old_op} == ${new_op})) { return 'true'; } else { return 'false'; } | success
+end
+assert | success | true
+
+-------------
+
+SUBTRACTION
+Command | Target | Value
+
+echo - Prepare variables
+store | 1 | min
+store | 1000 | max
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | a
+echo | A=${a}
+execute script | return Math.floor(Math.random()*(${max}-${min}+1))+${min} | b
+echo | B=${b}
+execute script | return +${a} - +${b} | c
+echo | Expected=${c}
+
+echo - Main logic
+open | /testlab/calc/
+type | name=a | ${a}
+type | name=b | ${b}
+type | name=f | 10
+click | xpath=//input[@name='op'][@value='-']
+select | name=next | label=Save
+click | css=input[type="submit"]
+xpath=//*[contains(text(), '${a} - ${b} = ${c}')]
+
